@@ -84,3 +84,11 @@ def get_video(user_name, video_name):
         ),
         302,
     )
+
+@app.route("/")
+def cron():
+    return jsonify({
+        "message":"success",
+        "types":app.config["UPLOAD_EXTENSIONS"]
+
+    }),200
