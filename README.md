@@ -19,7 +19,7 @@
 ### **Base Uri**
 ----
 ----
-Hosted for live testing on **https://**
+Hosted for live testing on **https://upload-man.onrender.com**
 ....
 <br>
 
