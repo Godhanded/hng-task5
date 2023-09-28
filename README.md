@@ -5,8 +5,9 @@
 - [Base Uri/Live Deployment](#base-uri)
 - [Error Handling](#error-handling)
 - [EndPoints](#endpoints)
-  - [Authentication](#authentication)
-
+  - [Upload Video](#upload-video)
+  - [get all user uploaded videos](#get-all-user-uploaded-videos)
+  - [get a video uploaded by user](#get-a-video-uploaded-by-a-user)
 - [Limitations or Assumptions](#assumptionslimitations)
 - [Authors](#authors)
 
@@ -56,27 +57,11 @@ $ pipenv shell
 # install dependencies in requirements.txt or pipfile
 $ pipenv install
 ```
-#### sample envs
-SECRET_KEY
-SQLALCHEMY_DATABASE_URI
-
 
 ### Run the Server
 ```bash
-$ python3 run.py 
+$ flask run
 ```
-
-### Run API TESTs
-***Note:** ensure you are connected to the internet before running tests and are in spitfire-events directory*
-```bash
-# install test suite and http requests library
-$ pip install requests pytest
-
-# Run the tests in test_crud.py
-$ pytest test_event.py -v
-```
-[click for test_event.py file](test_event.py)
-
 
 <br>
 
@@ -93,12 +78,10 @@ $ pytest test_event.py -v
   "message": "error description"
 }
 ```
-The API will return 5 error types, with diffreent descriptions when requests fail;
-- 400: Request unprocessable
+The API will return 4 error types, with diffreent descriptions when requests fail;
 - 403: Forbidden
 - 404: resource not found
-- 422: Bad Request
-- 429: Too Many Requests(rate limiting)
+- 400: Bad Request
 - 500: Internal server error
 
 <br>
@@ -111,22 +94,64 @@ The API will return 5 error types, with diffreent descriptions when requests fai
 ---
 <br>
 
-#### **Authentication**
+#### **upload video**
 
-  `GET '/auth/${id}'`
-- Gets a person from the database using user id
-- Path Parameter: `id`- integer id of person to retrieve 
-- Returns: JSON, message and person object containing name id and date created
+  `POST '/${user_name}'`
+- uploads a video of only the following file extensions
+```python
+ [
+        ".mp4",
+        ".MP4",
+        ".gif",
+        ".FLV",
+        ".flv",
+        ".avi",
+        ".AVI",
+        ".WebM",
+        ".webm",
+        ".3gp",
+        ".3GP",
+    ]
+
+```
+- Path Parameter: `user_name`- string user name of person to uploading
+- expects a form with inpute field of type file [see sample here](index.html)
+- Returns: JSON object containing message generated video_name and video_url
 
 ```json
  {
-    "message": "Success",
-    "person": {
-        "id":1,
-        "name":"name of user",
-        "date_created":"Mon, 11 Sep 2023 01:04:27 GMT"
+  "message": "success",
+  "video_name": "test.webm",
+  "video_url": "http://baseuri/test/test.webm"
+}
+```
+*status code: 201*
+
+---
+
+<br>
+
+#### **get all user uploaded videos**
+
+  `GET '/${user_name}'`
+- gets all videos uploaded by a particular username
+- Path Parameter: `user_name`- string user name of person 
+- Returns: JSON object containing message list of uploaded video_name and video_url if exists else []
+
+```json
+{
+  "message": "success",
+  "videos": [
+    {
+      "video_name": "test.webm",
+      "video_url": "http://baseuri/test/test.webm"
+    }, 
+    {
+        "video_name":"test2.mp4", 
+        "video_url":"http://baseuri/test/test2.mp4"
     }
- }
+  ]
+}
 ```
 *status code: 200*
 
@@ -134,8 +159,18 @@ The API will return 5 error types, with diffreent descriptions when requests fai
 
 <br>
 
-### **UML CLASS DIAGRAM**
+#### **get a video uploaded by a user**
+
+  `GET '/${user_name}/${video_name}'`
+- get a video uploaded by a user
+- Path Parameter: `user_name`, `video_name`- string user name of person to uploading name of video uploaded
+- Returns: Video. see sample query and use [here](index.html)
+
+*status code: 302 redirect to video file*
+
 ---
+
+<br>
 
 ## Authors
 - [@Godhanded](https://github.com/Godhanded)

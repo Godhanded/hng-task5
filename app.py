@@ -26,20 +26,25 @@ def upload_video(user_name):
         )
 
     if not os.path.exists(f"static/{user_name}"):
-        os.mkdir(f"static/{user_name}") 
+        os.mkdir(f"static/{user_name}")
     if os.path.exists(f"static/{user_name}/{file_name}"):
-        return jsonify({
-            "error":"bad request", 
-            "message":"this file name already exists"
-        }), 400
-    upload.save(os.path.join("static", user_name,file_name))
+        return (
+            jsonify(
+                {"error": "bad request", "message": "this file name already exists"}
+            ),
+            400,
+        )
+    upload.save(os.path.join("static", user_name, file_name))
     return (
         jsonify(
             {
                 "message": "success",
                 "video_name": file_name,
                 "video_url": url_for(
-                    "get_video", user_name=user_name , video_name=file_name, _external=True
+                    "get_video",
+                    user_name=user_name,
+                    video_name=file_name,
+                    _external=True,
                 ),
             }
         ),
@@ -54,10 +59,11 @@ def get_all_user_uploads(user_name):
     videos = [
         {
             "video_name": f,
-            "video_url": url_for("get_video", user_name=user_name , video_name=f, _external=True),
+            "video_url": url_for(
+                "get_video", user_name=user_name, video_name=f, _external=True
+            ),
         }
         for f in os.listdir(os.path.join("static", user_name))
-      
     ]
     return jsonify({"message": "success", "videos": videos}), 200
 
