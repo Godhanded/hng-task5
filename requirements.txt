@@ -1,4 +1,5 @@
 
 flask 
 black
+flask-cors
 gunicorn

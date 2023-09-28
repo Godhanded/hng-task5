@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, url_for, redirect, request
 from werkzeug.utils import secure_filename
 from get_ext import get_ext
+from flask_cors import CORS
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 app.config["MAX_CONTENT_LENGTH"] = 15 * (1024 * 1024)
 app.config["UPLOAD_EXTENSIONS"] = get_ext()
